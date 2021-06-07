@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ResponseHandler } from './utils';
 
 const uri = 'http://localhost:4000/tasks';
 
@@ -25,10 +26,7 @@ export class ApiService {
       })
       .catch((e) => console.error(e));
 
-    if (response && response.data) {
-      return true;
-    }
-    return false;
+    return ResponseHandler(response);
   }
 
   static async UpdateTask(task) {
@@ -39,18 +37,11 @@ export class ApiService {
       })
       .catch((e) => console.error(e));
 
-    if (response && response.data) {
-      return true;
-    }
-    return false;
+    return ResponseHandler(response);
   }
 
   static async BulkDelete() {
     const response = await axios.delete(uri).catch((e) => console.error(e));
-
-    if (response && response.data) {
-      return true;
-    }
-    return false;
+    return ResponseHandler(response);
   }
 }

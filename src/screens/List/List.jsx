@@ -4,14 +4,20 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { Input, Button, CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ApiService } from '../../services/Api.service';
+import { Loader } from '../../components/Loader';
+import { AddTaskHeader } from './components/AddTaskHeader';
+import { ButtonSection } from './components/ButtonSection';
 
 export const ListScreen = () => {
+  const [loading, setLoading] = useState(false);
   const [newTask, setNewTask] = useState('');
   const [tasks, setTasks] = useState([]);
 
   const fetchData = async () => {
+    setLoading(true);
     const fetchedTasks = await ApiService.GetTasks();
     setTasks(fetchedTasks);
+    setLoading(false);
   };
 
   const onCreateTask = async () => {
@@ -67,36 +73,26 @@ export const ListScreen = () => {
 
   return (
     <View style={styles.root}>
-      <View style={styles.addNew}>
-        <Input
-          placeholder="Add new task"
-          rightIcon={
-            <Icon name="check" size={20} onPress={onCreateTask} color="green" />
-          }
-          onChangeText={setNewTask}
-          value={newTask}
-        />
-      </View>
+      <AddTaskHeader
+        onCreateTask={onCreateTask}
+        setNewTask={setNewTask}
+        newTask={newTask}
+      />
       <View style={styles.list}>
-        <FlatList
-          data={tasks}
-          renderItem={flatListItemRenderer}
-          keyExtractor={(item) => item.id}
-        />
+        {loading ? (
+          <Loader />
+        ) : (
+          <FlatList
+            data={tasks}
+            renderItem={flatListItemRenderer}
+            keyExtractor={(item) => item.id}
+          />
+        )}
       </View>
-      <View style={styles.removeChecked}>
-        <Button
-          buttonStyle={{ minWidth: '80%' }}
-          containerStyle={{ margin: 20 }}
-          icon={<Icon name="trash" size={15} color="white" />}
-          loadingProps={{ animating: true }}
-          onPress={onRemoveFinishedTasks}
-          title="Remove finished items"
-          titleProps={{}}
-          titleStyle={{ marginHorizontal: 20 }}
-          disabled={tasks.filter((i) => i.completed).length === 0}
-        />
-      </View>
+      <ButtonSection
+        onRemoveFinishedTasks={onRemoveFinishedTasks}
+        tasks={tasks}
+      />
     </View>
   );
 };
@@ -107,12 +103,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
-  },
-  addNew: {
-    width: '100%',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   list: {
     flex: 7,
@@ -130,11 +120,5 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: 20,
     fontSize: 30,
-  },
-  removeChecked: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
