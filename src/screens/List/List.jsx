@@ -1,8 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
-import { Input, Button, CheckBox } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { StyleSheet, View, FlatList } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import { ApiService } from '../../services/Api.service';
 import { Loader } from '../../components/Loader';
 import { AddTaskHeader } from './components/AddTaskHeader';
